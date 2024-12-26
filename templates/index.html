@@ -1,32 +1,134 @@
-<html>
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="./static/mywebscript.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentiment Analysis for Comments</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <script src="{{ url_for('static', filename='mywebscript.js') }}"></script>
     <style>
-        .center-heading {
-            text-align: center;
-        }
+      .center-heading {
+        text-align: center;
+      }
+      .comment-box {
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 10px;
+      }
+      .btn-check-sentiment {
+        margin-top: 10px;
+      }
+      .sentiment-result {
+        margin-top: 10px;
+        font-weight: bold;
+      }
     </style>
-</head>
-<body>
-    <div class="card">
-        <div class="card-body">
-            <h1 class="center-heading">NLP - Sentiment Analysis using BERT</h1> 
-            <div style="padding: 25px 25px 25px 25px;">
-            <h2 class="mb-3">
-                <label class="form-label">Please enter the text to be analyzed</label>
-                <input type="textarea" class="form-control" id="textToAnalyze">
-            </h2>
-
-            <div style="padding: 25px 25px 25px 25px;">
-                <button onclick="RunSentimentAnalysis()" class="btn btn-secondary">Run Sentiment Analysis</button>
-            </div>
-            <div style="padding: 25px 25px 25px 25px;"></div>
-            <h2 class="mb-3">
-                <label class="form-label">Result of Sentiment Analysis</label>
-            </h2>
-
-            <div id="system_response" style="padding: 25px 25px 25px 25px;"></div>
-        </div>
+  </head>
+  <body>
+    <!-- Page Header -->
+    <div class="container mt-4">
+      <h1 class="center-heading">E-Commerce Customer Reviews</h1>
+      <p class="text-center text-muted">
+        Check if the customer's review is positive, neutral, or negative.
+      </p>
     </div>
-</body>
+
+    <!-- Comment Section -->
+    <div class="container mt-4">
+      <div class="card">
+        <div class="card-body">
+          <h3>Customer Comments</h3>
+
+          <!-- Dynamic Comment 1 -->
+          <div class="comment-box" id="comment1">
+            <strong>Patrick Al Helou:</strong>
+            <p>"This product is amazing! It exceeded my expectations."</p>
+            <button
+              onclick="RunSentimentAnalysis('This product is amazing! It exceeded my expectations.', 'result1')"
+              class="btn btn-success btn-check-sentiment"
+            >
+              Check Sentiment
+            </button>
+            <div id="result1" class="sentiment-result"></div>
+          </div>
+
+          <!-- Dynamic Comment 2 -->
+          <div class="comment-box" id="comment2">
+            <strong>Charles Khoury:</strong>
+            <p>"The quality is terrible. I regret buying this product."</p>
+            <button
+              onclick="RunSentimentAnalysis('The quality is terrible. I regret buying this product.', 'result2')"
+              class="btn btn-danger btn-check-sentiment"
+            >
+              Check Sentiment
+            </button>
+            <div id="result2" class="sentiment-result"></div>
+          </div>
+
+          <!-- Dynamic Comment 3 -->
+          <div class="comment-box" id="comment3">
+            <strong>Elie challita:</strong>
+            <p>"It's okay. Nothing special, but it works as advertised."</p>
+            <button
+              onclick="RunSentimentAnalysis('It is okay. Nothing special, but it works as advertised.', 'result3')"
+              class="btn btn-warning btn-check-sentiment"
+            >
+              Check Sentiment
+            </button>
+            <div id="result3" class="sentiment-result"></div>
+          </div>
+
+          <!-- Add a New Comment -->
+          <h5 class="mt-4">Add Your Own Comment</h5>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              id="userComment"
+              placeholder="Write your comment here..."
+            />
+          </div>
+          <button onclick="addCustomComment()" class="btn btn-primary">
+            Add Comment
+          </button>
+          <div id="custom_comments" class="mt-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Function to add a custom comment
+      function addCustomComment() {
+        const commentText = document.getElementById("userComment").value;
+        if (!commentText) {
+          alert("Please enter a comment!");
+          return;
+        }
+
+        const commentId = `customResult${Date.now()}`;
+        const commentHTML = `
+          <div class="comment-box">
+            <strong>You:</strong>
+            <p>${commentText}</p>
+            <button
+              onclick="RunSentimentAnalysis('${commentText.replace(
+                /'/g,
+                "\\'"
+              )}', '${commentId}')"
+              class="btn btn-info btn-check-sentiment"
+            >
+              Check Sentiment
+            </button>
+            <div id="${commentId}" class="sentiment-result"></div>
+          </div>
+        `;
+        document.getElementById("custom_comments").innerHTML += commentHTML;
+        document.getElementById("userComment").value = "";
+      }
+    </script>
+  </body>
+</html>

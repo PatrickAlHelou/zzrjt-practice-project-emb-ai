@@ -3,30 +3,26 @@ from sentiment_analysis import sentiment_analyzer
 
 app = Flask(__name__)
 
-# Home Route
+# Home
 @app.route("/")
 def home():
     return render_template("index.html")
 
-# Sentiment Analysis API Route
+# API for sentiment
 @app.route("/analyze", methods=["POST"])
 def analyze_sentiment():
     try:
-        # Extract text from the request
+        # Get text input from the request
         data = request.get_json()
         text_to_analyse = data.get("text")
-        
+
         if not text_to_analyse:
             return jsonify({"error": "No text provided"}), 400
-        
-        # Run sentiment analysis
+
+        # Call the sentiment analysis function
         result = sentiment_analyzer(text_to_analyse)
-        
-        # Return the result
-        if "error" in result:
-            return jsonify({"error": result["error"]}), 500
-        return jsonify({"result": result["sentiment"]})
-    
+        return jsonify({"result": result})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
